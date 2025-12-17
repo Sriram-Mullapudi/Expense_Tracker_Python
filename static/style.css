@@ -1,20 +1,21 @@
+.root-placeholder{}
+
 :root{
 	--deep-purple: #6A00F4;
 	--magenta: #FF3CAC;
 	--coral: #FF7A59;
-	--warm-orange: #FFB86B;
-	--sun-yellow: #FFD166;
 	--teal: #00D4B4;
 	--cyan: #00A6FF;
 	--royal-blue: #2E5AFF;
-	--spring-green: #7BE495;
+	--indigo: #3B2CFF;
 	--ui-base: #0F1724;
 	--card: #F7F9FC;
 	--muted-border: rgba(15,23,36,0.06);
 	--text-on-accent: #ffffff;
 }
 
-body { padding-bottom: 40px; background: linear-gradient(180deg, var(--sun-yellow) 0%, var(--warm-orange) 40%, #ffd89a 100%); color: var(--ui-base); }
+/* Cooler, more engaging page background */
+body { padding-bottom: 40px; background: linear-gradient(180deg, #071124 0%, rgba(46,90,255,0.08) 30%, rgba(0,166,255,0.02) 100%); color: #eaf2ff; }
 .table tfoot th { font-weight: 700; }
 .card.text-bg-light { background: var(--card); border: 1px solid var(--muted-border); }
 .display-6 { font-size: 1.75rem; margin: 0; }
@@ -23,23 +24,23 @@ body { padding-bottom: 40px; background: linear-gradient(180deg, var(--sun-yello
 .container { max-width: 980px; }
 
 /* Navbar / hero */
-.site-navbar { background: linear-gradient(90deg, var(--deep-purple), var(--magenta)); }
+.site-navbar { background: linear-gradient(90deg, var(--indigo), var(--royal-blue)); }
 .site-navbar .navbar-brand, .site-navbar .nav-link { color: var(--text-on-accent) !important; }
 
 /* Buttons */
 .btn-primary {
-	background: linear-gradient(90deg, var(--magenta), var(--coral));
+	background: linear-gradient(90deg, var(--royal-blue), var(--cyan));
 	border: none;
 	color: var(--text-on-accent);
 }
 .btn-outline-primary {
-	color: var(--magenta);
-	border-color: rgba(255,60,76,0.15);
+	color: var(--royal-blue);
+	border-color: rgba(46,90,255,0.12);
 }
 .btn-outline-success { color: var(--teal); border-color: rgba(0,212,180,0.12); }
 
 /* Category badge colors (fallback to primary) */
-.badge.bg-primary { background: linear-gradient(90deg,var(--royal-blue),var(--cyan)); }
+.badge.bg-primary { background: linear-gradient(90deg,var(--cyan),var(--teal)); }
 
 /* Card accent */
 .summary-card { border-radius: 10px; box-shadow: 0 6px 18px rgba(15,23,36,0.06); }
@@ -55,14 +56,14 @@ body { padding-bottom: 40px; background: linear-gradient(180deg, var(--sun-yello
 	overflow: hidden;
 	border-radius: 16px;
 	margin: 0 -12px 24px -12px;
-	background: linear-gradient(135deg, rgba(106,0,244,0.95) 0%, rgba(255,60,172,0.92) 40%, rgba(255,122,89,0.90) 70%);
-	box-shadow: 0 12px 40px rgba(15,23,36,0.18);
+	background: linear-gradient(135deg, rgba(46,90,255,0.98) 0%, rgba(0,166,255,0.95) 45%, rgba(106,0,244,0.9) 100%);
+	box-shadow: 0 18px 50px rgba(2,6,23,0.55);
 }
 .hero:before {
 	content: '';
 	position: absolute;
 	inset: -30% -20% -30% -20%;
-	background: radial-gradient(circle at 10% 20%, rgba(255,209,102,0.12), transparent 8%), radial-gradient(circle at 90% 80%, rgba(0,212,180,0.08), transparent 10%);
+	background: radial-gradient(circle at 10% 20%, rgba(0,166,255,0.12), transparent 8%), radial-gradient(circle at 90% 80%, rgba(106,0,244,0.08), transparent 10%);
 	animation: floatBg 12s linear infinite;
 	z-index: 0;
 }
@@ -77,17 +78,17 @@ body { padding-bottom: 40px; background: linear-gradient(180deg, var(--sun-yello
 }
 
 .btn-cta {
-	--btn-accent1: var(--magenta);
-	--btn-accent2: var(--coral);
+	--btn-accent1: var(--royal-blue);
+	--btn-accent2: var(--cyan);
 	border: none;
 	color: var(--text-on-accent);
 	background: linear-gradient(90deg, var(--btn-accent1), var(--btn-accent2));
 	padding: 0.9rem 1.4rem;
 	font-weight: 600;
-	box-shadow: 0 8px 20px rgba(106,0,244,0.18);
+	box-shadow: 0 10px 26px rgba(46,90,255,0.16);
 	transition: transform .18s ease, box-shadow .18s ease;
 }
-.btn-cta:hover { transform: translateY(-4px); box-shadow: 0 18px 28px rgba(106,0,244,0.22); }
+.btn-cta:hover { transform: translateY(-4px); box-shadow: 0 22px 36px rgba(46,90,255,0.22); }
 
 /* table and rows: colorful but readable */
 .table thead th {
@@ -107,7 +108,7 @@ body { padding-bottom: 40px; background: linear-gradient(180deg, var(--sun-yello
 	bottom: 8px;
 	width: 6px;
 	border-radius: 6px;
-	background: linear-gradient(180deg, var(--magenta), var(--coral));
+	background: linear-gradient(180deg, var(--cyan), var(--royal-blue));
 }
 
 /* Animated badge pulse */
