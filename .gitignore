@@ -1,0 +1,10 @@
+venv/
+.env
+*.pyc
+__pycache__/
+*.db
+expenses.csv
+response.txt
+.DS_Store
+.idea/
+.vscode/
