@@ -6,6 +6,29 @@
   <a class="btn btn-primary" href="/add">Add Expense</a>
 </div>
 
+<div class="row mb-3">
+  <div class="col-md-4">
+    <div class="card text-bg-light mb-2">
+      <div class="card-body">
+        <h6 class="card-title">Total</h6>
+        <p class="card-text display-6 text-end">{{ '%.2f'|format(total) }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-light mb-2">
+      <div class="card-body">
+        <h6 class="card-title">Entries</h6>
+        <p class="card-text display-6 text-end">{{ expenses|length }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 d-flex align-items-center justify-content-end">
+    <a class="btn btn-outline-secondary me-2" href="/">Reset</a>
+    <a class="btn btn-outline-success" href="/export?date_from={{ date_from }}&amp;date_to={{ date_to }}&amp;category={{ category }}">Export CSV</a>
+  </div>
+</div>
+
 <form class="row g-2 mb-3" method="get">
   <div class="col-auto">
     <input type="date" name="date_from" class="form-control" value="{{ date_from }}" placeholder="From">
@@ -37,8 +60,14 @@
     <tr>
       <td>{{ e.date.strftime('%Y-%m-%d') }}</td>
       <td>{{ e.title }}</td>
-      <td>{{ e.category or '-' }}</td>
-      <td class="text-end">{{ '%.2f'|format(e.amount) }}</td>
+      <td>
+        {% if e.category %}
+          <span class="badge bg-primary">{{ e.category }}</span>
+        {% else %}
+          <span class="text-muted">-</span>
+        {% endif %}
+      </td>
+      <td class="text-end fw-semibold">{{ '%.2f'|format(e.amount) }}</td>
       <td>
         <div class="btn-group" role="group">
           <a class="btn btn-sm btn-outline-primary" href="/edit/{{ e.id }}">Edit</a>

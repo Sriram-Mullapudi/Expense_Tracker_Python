@@ -1,2 +1,7 @@
-body { padding-bottom: 40px; }
+body { padding-bottom: 40px; background:#f8f9fa; }
 .table tfoot th { font-weight: 700; }
+.card.text-bg-light { background: #ffffff; border: 1px solid rgba(0,0,0,0.05); }
+.display-6 { font-size: 1.75rem; margin: 0; }
+.fw-semibold { font-weight: 600; }
+.badge { font-size: 0.85em; }
+.container { max-width: 980px; }
