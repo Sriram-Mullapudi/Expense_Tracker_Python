@@ -48,3 +48,77 @@ body { padding-bottom: 40px; background: linear-gradient(180deg, var(--sun-yello
 @media (max-width: 576px) {
 	.display-6 { font-size: 1.25rem; }
 }
+
+/* --- Engaging colorful hero and UI interactions --- */
+.hero {
+	position: relative;
+	overflow: hidden;
+	border-radius: 16px;
+	margin: 0 -12px 24px -12px;
+	background: linear-gradient(135deg, rgba(106,0,244,0.95) 0%, rgba(255,60,172,0.92) 40%, rgba(255,122,89,0.90) 70%);
+	box-shadow: 0 12px 40px rgba(15,23,36,0.18);
+}
+.hero:before {
+	content: '';
+	position: absolute;
+	inset: -30% -20% -30% -20%;
+	background: radial-gradient(circle at 10% 20%, rgba(255,209,102,0.12), transparent 8%), radial-gradient(circle at 90% 80%, rgba(0,212,180,0.08), transparent 10%);
+	animation: floatBg 12s linear infinite;
+	z-index: 0;
+}
+.hero .container { position: relative; z-index: 2; }
+.hero-title { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; font-weight:700; letter-spacing: -0.02em; font-size: clamp(1.6rem, 3.5vw, 2.6rem); }
+.hero-sub { opacity: 0.95; font-weight: 300; margin-top: 0.5rem; }
+
+@keyframes floatBg {
+	0% { transform: translateY(0) rotate(0deg); }
+	50% { transform: translateY(-12px) rotate(2deg); }
+	100% { transform: translateY(0) rotate(0deg); }
+}
+
+.btn-cta {
+	--btn-accent1: var(--magenta);
+	--btn-accent2: var(--coral);
+	border: none;
+	color: var(--text-on-accent);
+	background: linear-gradient(90deg, var(--btn-accent1), var(--btn-accent2));
+	padding: 0.9rem 1.4rem;
+	font-weight: 600;
+	box-shadow: 0 8px 20px rgba(106,0,244,0.18);
+	transition: transform .18s ease, box-shadow .18s ease;
+}
+.btn-cta:hover { transform: translateY(-4px); box-shadow: 0 18px 28px rgba(106,0,244,0.22); }
+
+/* table and rows: colorful but readable */
+.table thead th {
+	background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+	border-bottom: 1px solid rgba(15,23,36,0.06);
+}
+.table tbody tr { transition: background .15s ease, transform .08s ease; }
+.table tbody tr:hover { background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); transform: translateY(-2px); }
+
+/* colorful separators for rows using subtle left accent */
+.table tbody td:first-child { position: relative; }
+.table tbody td:first-child:after {
+	content: '';
+	position: absolute;
+	left: -12px;
+	top: 8px;
+	bottom: 8px;
+	width: 6px;
+	border-radius: 6px;
+	background: linear-gradient(180deg, var(--magenta), var(--coral));
+}
+
+/* Animated badge pulse */
+.badge { transition: transform .12s ease; }
+.badge:hover { transform: scale(1.05); }
+
+/* subtle glass cards for summary */
+.summary-card { background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.9)); border: 1px solid rgba(255,255,255,0.35); }
+
+/* Accent ring on focus for inputs */
+input:focus, select:focus { outline: none; box-shadow: 0 0 0 4px rgba(255,60,172,0.08); border-color: rgba(255,60,172,0.35); }
+
+/* Footer small styling (if used) */
+.site-footer { margin-top: 48px; padding: 24px 0; text-align:center; color: rgba(15,23,36,0.7); }
