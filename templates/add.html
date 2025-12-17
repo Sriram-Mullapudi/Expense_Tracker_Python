@@ -1,25 +1,57 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Add Expense</h2>
-<form method="post">
-  <div class="mb-3">
-    <label class="form-label">Title</label>
-    <input name="title" class="form-control" required>
+<div class="add-expense-container">
+  <div class="card add-expense-card">
+    <div class="card-header add-expense-header">
+      <h2>✨ Add a New Expense</h2>
+      <p class="text-muted">Track your spending</p>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Expense Title</label>
+          <input name="title" class="form-control form-control-lg" placeholder="e.g., Coffee at Starbucks" required>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <label class="form-label fw-semibold">Amount</label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text currency-symbol">$</span>
+              <input name="amount" type="number" step="0.01" class="form-control" placeholder="0.00" required>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <label class="form-label fw-semibold">Category</label>
+            <select name="category" class="form-select form-select-lg">
+              <option value="">Select a category...</option>
+              <option value="Food & Dining">🍔 Food & Dining</option>
+              <option value="Transportation">🚗 Transportation</option>
+              <option value="Entertainment">🎬 Entertainment</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Utilities">💡 Utilities</option>
+              <option value="Health">🏥 Health</option>
+              <option value="Travel">✈️ Travel</option>
+              <option value="Education">📚 Education</option>
+              <option value="Business">💼 Business</option>
+              <option value="Other">📌 Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Date</label>
+          <input name="date" type="date" class="form-control form-control-lg">
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-cta btn-lg">💾 Save Expense</button>
+          <a class="btn btn-outline-secondary" href="/">Cancel</a>
+        </div>
+      </form>
+    </div>
   </div>
-  <div class="mb-3">
-    <label class="form-label">Amount</label>
-    <input name="amount" type="number" step="0.01" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Category</label>
-    <input name="category" class="form-control">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Date</label>
-    <input name="date" type="date" class="form-control">
-  </div>
-  <button class="btn btn-success">Save</button>
-  <a class="btn btn-secondary" href="/">Cancel</a>
-</form>
+</div>
 {% endblock %}

@@ -6,26 +6,50 @@
   <a class="btn btn-primary" href="/add">Add Expense</a>
 </div>
 
-<div class="row mb-3">
-  <div class="col-md-4">
-    <div class="card text-bg-light mb-2">
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card text-bg-light mb-2 summary-card">
       <div class="card-body">
-        <h6 class="card-title">Total</h6>
-        <p class="card-text display-6 text-end">{{ '%.2f'|format(total) }}</p>
+        <h6 class="card-title">Total Spent</h6>
+        <p class="card-text display-6 text-end" style="color: #00A86B;">$ {{ '%.2f'|format(total) }}</p>
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="card text-bg-light mb-2">
+  <div class="col-md-3">
+    <div class="card text-bg-light mb-2 summary-card">
       <div class="card-body">
         <h6 class="card-title">Entries</h6>
         <p class="card-text display-6 text-end">{{ expenses|length }}</p>
       </div>
     </div>
   </div>
-  <div class="col-md-4 d-flex align-items-center justify-content-end">
-    <a class="btn btn-outline-secondary me-2" href="/">Reset</a>
-    <a class="btn btn-outline-success" href="/export?date_from={{ date_from }}&amp;date_to={{ date_to }}&amp;category={{ category }}">Export CSV</a>
+  <div class="col-md-3">
+    <div class="card text-bg-light mb-2 summary-card action-card">
+      <div class="card-body text-center">
+        <h6 class="card-title">👥 Friends</h6>
+        <p class="card-text small mb-2">Add & manage friends</p>
+        <a class="btn btn-sm btn-outline-primary" href="#">Add Friends</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-light mb-2 summary-card action-card">
+      <div class="card-body text-center">
+        <h6 class="card-title">👫 Groups</h6>
+        <p class="card-text small mb-2">Create & manage groups</p>
+        <a class="btn btn-sm btn-outline-primary" href="#">Create Group</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-12 d-flex align-items-center justify-content-between">
+    <div>
+      <a class="btn btn-outline-secondary me-2" href="/">Reset</a>
+      <a class="btn btn-outline-success" href="/export?date_from={{ date_from }}&amp;date_to={{ date_to }}&amp;category={{ category }}">📊 Export CSV</a>
+    </div>
+    <a class="btn btn-cta" href="#share-modal">📤 Share with Friends</a>
   </div>
 </div>
 
@@ -67,7 +91,7 @@
           <span class="text-muted">-</span>
         {% endif %}
       </td>
-      <td class="text-end fw-semibold">{{ '%.2f'|format(e.amount) }}</td>
+      <td class="text-end fw-semibold" style="color: #00A86B;">$ {{ '%.2f'|format(e.amount) }}</td>
       <td>
         <div class="btn-group" role="group">
           <a class="btn btn-sm btn-outline-primary" href="/edit/{{ e.id }}">Edit</a>
