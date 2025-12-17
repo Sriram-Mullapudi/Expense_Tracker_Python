@@ -6,6 +6,22 @@
   <a class="btn btn-primary" href="/add">Add Expense</a>
 </div>
 
+<form class="row g-2 mb-3" method="get">
+  <div class="col-auto">
+    <input type="date" name="date_from" class="form-control" value="{{ date_from }}" placeholder="From">
+  </div>
+  <div class="col-auto">
+    <input type="date" name="date_to" class="form-control" value="{{ date_to }}" placeholder="To">
+  </div>
+  <div class="col-auto">
+    <input name="category" class="form-control" value="{{ category }}" placeholder="Category">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-secondary">Filter</button>
+    <a class="btn btn-outline-secondary" href="/export?date_from={{ date_from }}&amp;date_to={{ date_to }}&amp;category={{ category }}">Export CSV</a>
+  </div>
+</form>
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -24,9 +40,12 @@
       <td>{{ e.category or '-' }}</td>
       <td class="text-end">{{ '%.2f'|format(e.amount) }}</td>
       <td>
-        <form method="post" action="/delete/{{ e.id }}" onsubmit="return confirm('Delete this expense?');">
-          <button class="btn btn-sm btn-danger">Delete</button>
-        </form>
+        <div class="btn-group" role="group">
+          <a class="btn btn-sm btn-outline-primary" href="/edit/{{ e.id }}">Edit</a>
+          <form method="post" action="/delete/{{ e.id }}" onsubmit="return confirm('Delete this expense?');" style="display:inline;">
+            <button class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </div>
       </td>
     </tr>
     {% endfor %}

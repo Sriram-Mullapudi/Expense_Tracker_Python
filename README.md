@@ -73,3 +73,11 @@ python app.py
 
 If you'd like, I can run the app now to verify it starts, or add one of the features above.
 
+## New features added
+
+- Edit/update existing expenses via the **Edit** button on the list view.
+- Filter expenses by date range and category using the filter inputs on the homepage.
+- Export the current filtered list as CSV via the **Export CSV** button.
+
+These features are available locally after pulling the latest changes.
+
