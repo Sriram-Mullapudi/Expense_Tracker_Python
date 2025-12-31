@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="add-expense-container">
+      <div class="add-expense-card">
+        <div class="add-expense-header">
+          <h2 class="mb-0"><i class="bi bi-sliders me-2"></i>Settings</h2>
+          <p class="mb-0">Customize your expense tracker</p>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label fw-600 mb-0">Monthly Budget (USD)</label>
+                {% if budget_value and budget_value > 0 %}
+                  <span class="badge bg-primary">
+                    <i class="bi bi-lightning-fill me-1"></i>Remaining: ${{ '%.2f'|format(remaining_budget) }}
+                  </span>
+                {% endif %}
+              </div>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text currency-symbol">$</span>
+                <input name="monthly_budget" class="form-control" type="number" step="0.01" value="{{ monthly_budget }}" placeholder="0.00">
+              </div>
+              <small class="form-text text-muted d-block mt-2">
+                <i class="bi bi-info-circle me-1"></i>Set your monthly spending limit to track your budget easily.
+              </small>
+            </div>
+
+            <div class="d-flex gap-2 pt-2">
+              <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                <i class="bi bi-check-circle me-2"></i>Save Settings
+              </button>
+              <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-x-circle me-2"></i>Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="mb-4"><i class="bi bi-wallet2 me-2"></i>Budget Overview</h5>
+        
+        {% if budget_value and budget_value > 0 %}
+          <div class="row mb-4 g-2">
+            <div class="col-6">
+              <div class="stats-card">
+                <i class="bi bi-calculator" style="font-size: 1.5rem; color: var(--sea); margin-bottom: 0.5rem; display: block;"></i>
+                <div class="text-muted" style="font-size: 0.85rem;">Total Budget</div>
+                <div class="h5 mb-0">${{ '%.2f'|format(budget_value) }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="stats-card">
+                <i class="bi bi-graph-up" style="font-size: 1.5rem; color: var(--coral); margin-bottom: 0.5rem; display: block;"></i>
+                <div class="text-muted" style="font-size: 0.85rem;">Spent This Month</div>
+                <div class="h5 mb-0">${{ '%.2f'|format(month_total) }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="stats-card {% if remaining_budget < 0 %}border-danger{% endif %}" id="leftAmountCard">
+                <i class="bi" id="leftAmountIcon" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                <div class="text-muted" style="font-size: 0.85rem;">Left Amount</div>
+                <div class="h5 mb-0" id="leftAmountValue">${{ '%.2f'|format(remaining_budget) }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="stats-card">
+                <i class="bi bi-percent" style="font-size: 1.5rem; color: var(--royal-blue); margin-bottom: 0.5rem; display: block;"></i>
+                <div class="text-muted" style="font-size: 0.85rem;">Usage %</div>
+                <div class="h5 mb-0">{{ ((month_total / budget_value) * 100)|int }}%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <div style="position: relative; height: 280px;">
+              <canvas id="budgetChart"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="progress" style="height: 20px; border-radius: 10px;">
+              <div class="progress-bar" id="budgetProgressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <small class="text-muted mt-2 d-block" id="budgetProgressText">Progress: 0% of budget used</small>
+          </div>
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.5;"></i>
+            <p class="mt-3">Set a monthly budget to see your spending overview</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+{% if budget_value and budget_value > 0 %}
+<script>
+  const month_total = {{ month_total }};
+  const budget_value = {{ budget_value }};
+  const remaining_budget = {{ remaining_budget }};
+  
+  // Set up left amount card styling
+  const leftAmountIcon = document.getElementById('leftAmountIcon');
+  const leftAmountValue = document.getElementById('leftAmountValue');
+  if (remaining_budget >= 0) {
+    leftAmountIcon.className = 'bi bi-check-circle';
+    leftAmountIcon.style.color = 'var(--mint-deep)';
+    leftAmountValue.style.color = 'var(--mint-deep)';
+  } else {
+    leftAmountIcon.className = 'bi bi-exclamation-circle';
+    leftAmountIcon.style.color = 'var(--coral)';
+    leftAmountValue.style.color = 'var(--coral)';
+  }
+  
+  // Set up progress bar
+  const percentage = Math.round((month_total / budget_value) * 100);
+  const progressBar = document.getElementById('budgetProgressBar');
+  progressBar.style.width = percentage + '%';
+  progressBar.setAttribute('aria-valuenow', percentage);
+  progressBar.style.background = 'linear-gradient(90deg, var(--sea), var(--mint-deep))';
+  progressBar.style.borderRadius = '10px';
+  
+  const progressText = document.getElementById('budgetProgressText');
+  progressText.textContent = 'Progress: ' + percentage.toFixed(1) + '% of budget used';
+  
+  // Budget pie chart
+  const ctx = document.getElementById('budgetChart').getContext('2d');
+  
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Spent', 'Remaining'],
+      datasets: [{
+        data: [month_total, Math.max(0, remaining_budget)],
+        backgroundColor: [
+          'rgba(255, 107, 107, 0.8)',
+          'rgba(123, 228, 149, 0.8)'
+        ],
+        borderColor: [
+          'rgba(255, 107, 107, 1)',
+          'rgba(123, 228, 149, 1)'
+        ],
+        borderWidth: 2,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: "'Poppins', sans-serif", size: 13, weight: '500' },
+            padding: 15,
+            usePointStyle: true,
+            color: 'var(--text)'
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return '$' + context.parsed.toFixed(2);
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}
+
+{% endblock %}

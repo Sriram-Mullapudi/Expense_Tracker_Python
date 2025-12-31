@@ -1,114 +1,186 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2>Expenses</h2>
-  <a class="btn btn-primary" href="/add">Add Expense</a>
+
+<!-- Filter Section -->
+<div class="card mb-4 border-0">
+  <div class="card-body">
+    <h6 class="mb-3"><i class="bi bi-funnel me-2"></i>Filters</h6>
+    <form class="row g-2" method="get">
+      <div class="col-sm-6 col-lg-2">
+        <input type="date" name="date_from" value="{{ filters.date_from or '' }}" class="form-control form-control-sm" title="Start Date">
+      </div>
+      <div class="col-sm-6 col-lg-2">
+        <input type="date" name="date_to" value="{{ filters.date_to or '' }}" class="form-control form-control-sm" title="End Date">
+      </div>
+      <div class="col-sm-6 col-lg-2">
+        <select name="category" class="form-select form-select-sm">
+          <option value="all">All categories</option>
+          {% for c in all_categories %}
+            <option value="{{ c }}" {% if filters.category==c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-sm-6 col-lg-2">
+        <input type="month" name="month" value="{{ filters.month or '' }}" class="form-control form-control-sm">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-search me-1"></i>Filter</button>
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('index') }}"><i class="bi bi-arrow-clockwise me-1"></i>Clear</a>
+      </div>
+      <div class="col-auto ms-auto">
+        <a class="btn btn-sm btn-success" href="{{ url_for('export_csv', **filters) }}"><i class="bi bi-download me-1"></i>Export CSV</a>
+      </div>
+    </form>
+  </div>
 </div>
 
-<div class="row mb-4">
-  <div class="col-md-3">
-    <div class="card text-bg-light mb-2 summary-card">
+<!-- Statistics Cards -->
+<div class="row mb-4 g-3">
+  <div class="col-sm-6 col-lg-3">
+    <div class="stats-card">
+      <i class="bi bi-graph-up-arrow" style="font-size: 1.5rem; color: var(--sea); margin-bottom: 0.5rem; display: block;"></i>
+      <div class="text-muted">Total Spent</div>
+      <div class="h4">${{ '%.2f'|format(total_spent) }}</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="stats-card">
+      <i class="bi bi-calendar-today" style="font-size: 1.5rem; color: var(--mint-deep); margin-bottom: 0.5rem; display: block;"></i>
+      <div class="text-muted">Today</div>
+      <div class="h4">${{ '%.2f'|format(today_total) }}</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="stats-card">
+      <i class="bi bi-calendar-month" style="font-size: 1.5rem; color: var(--royal-blue); margin-bottom: 0.5rem; display: block;"></i>
+      <div class="text-muted">This Month</div>
+      <div class="h4">${{ '%.2f'|format(month_total) }}</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="stats-card" id="budgetCard">
+      <i class="bi bi-wallet" style="font-size: 1.5rem; color: var(--amber); margin-bottom: 0.5rem; display: block;"></i>
+      <div class="text-muted">Monthly Budget</div>
+      <div class="h4" id="budgetAmount">${{ '%.2f'|format(budget) if budget else '—' }}</div>
+      {% if budget_warning %}
+        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>Over budget!</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Charts and Recent Expenses -->
+<div class="row mb-4 g-3">
+  <div class="col-lg-6">
+    <div class="card">
       <div class="card-body">
-        <h6 class="card-title">Total Spent</h6>
-        <p class="card-text display-6 text-end" style="color: #00A86B;">$ {{ '%.2f'|format(total) }}</p>
+        <h6 class="mb-3"><i class="bi bi-pie-chart me-2"></i>Spending by Category</h6>
+        <canvas id="categoryChart" width="400" height="280"></canvas>
       </div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card text-bg-light mb-2 summary-card">
+  <div class="col-lg-6">
+    <div class="card">
       <div class="card-body">
-        <h6 class="card-title">Entries</h6>
-        <p class="card-text display-6 text-end">{{ expenses|length }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-bg-light mb-2 summary-card action-card">
-      <div class="card-body text-center">
-        <h6 class="card-title">👥 Friends</h6>
-        <p class="card-text small mb-2">Add & manage friends</p>
-        <a class="btn btn-sm btn-outline-primary" href="#">Add Friends</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-bg-light mb-2 summary-card action-card">
-      <div class="card-body text-center">
-        <h6 class="card-title">👫 Groups</h6>
-        <p class="card-text small mb-2">Create & manage groups</p>
-        <a class="btn btn-sm btn-outline-primary" href="#">Create Group</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row mb-3">
-  <div class="col-md-12 d-flex align-items-center justify-content-between">
-    <div>
-      <a class="btn btn-outline-secondary me-2" href="/">Reset</a>
-      <a class="btn btn-outline-success" href="/export?date_from={{ date_from }}&amp;date_to={{ date_to }}&amp;category={{ category }}">📊 Export CSV</a>
-    </div>
-    <a class="btn btn-cta" href="#share-modal">📤 Share with Friends</a>
-  </div>
-</div>
-
-<form class="row g-2 mb-3" method="get">
-  <div class="col-auto">
-    <input type="date" name="date_from" class="form-control" value="{{ date_from }}" placeholder="From">
-  </div>
-  <div class="col-auto">
-    <input type="date" name="date_to" class="form-control" value="{{ date_to }}" placeholder="To">
-  </div>
-  <div class="col-auto">
-    <input name="category" class="form-control" value="{{ category }}" placeholder="Category">
-  </div>
-  <div class="col-auto">
-    <button class="btn btn-secondary">Filter</button>
-    <a class="btn btn-outline-secondary" href="/export?date_from={{ date_from }}&amp;date_to={{ date_to }}&amp;category={{ category }}">Export CSV</a>
-  </div>
-</form>
-
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Title</th>
-      <th>Category</th>
-      <th class="text-end">Amount</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for e in expenses %}
-    <tr>
-      <td>{{ e.date.strftime('%Y-%m-%d') }}</td>
-      <td>{{ e.title }}</td>
-      <td>
-        {% if e.category %}
-          <span class="badge bg-primary">{{ e.category }}</span>
-        {% else %}
-          <span class="text-muted">-</span>
-        {% endif %}
-      </td>
-      <td class="text-end fw-semibold" style="color: #00A86B;">$ {{ '%.2f'|format(e.amount) }}</td>
-      <td>
-        <div class="btn-group" role="group">
-          <a class="btn btn-sm btn-outline-primary" href="/edit/{{ e.id }}">Edit</a>
-          <form method="post" action="/delete/{{ e.id }}" onsubmit="return confirm('Delete this expense?');" style="display:inline;">
-            <button class="btn btn-sm btn-danger">Delete</button>
-          </form>
+        <h6 class="mb-3"><i class="bi bi-clock-history me-2"></i>Recent Expenses</h6>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th class="text-end">Amount</th>
+                <th class="text-end" style="width: 100px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if expenses %}
+                {% for e in expenses %}
+                  <tr>
+                    <td><small>{{ e.date }}</small></td>
+                    <td>
+                      <strong>{{ e.title }}</strong>
+                      {% if e.description %}<div class="small text-muted">{{ e.description }}</div>{% endif %}
+                    </td>
+                    <td><span class="badge bg-secondary">{{ e.category }}</span></td>
+                    <td class="text-end"><strong>${{ '%.2f'|format(e.amount) }}</strong></td>
+                    <td class="text-end">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <a href="{{ url_for('edit', id=e.id) }}" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <button class="btn btn-outline-danger" onclick="showDeleteModal({{ e.id }}, '{{ e.title|e }}')" title="Delete"><i class="bi bi-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-3">No expenses found</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
         </div>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr>
-      <th colspan="3">Total</th>
-      <th class="text-end">{{ '%.2f'|format(total) }}</th>
-      <th></th>
-    </tr>
-  </tfoot>
-</table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="delete-form" method="post" action="">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Delete Expense</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete <strong id="delete-item-title"></strong>?</p>
+          <p class="text-muted small">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+  const ctx = document.getElementById('categoryChart').getContext('2d');
+  const labels = {{ category_labels | tojson }};
+  const values = {{ category_values | tojson }};
+  const colors = ['#7BE495', '#00A6FF', '#7C3AED', '#FF6B6B', '#F59E0B', '#10B981', '#2E5AFF', '#00D4B4', '#F97316'];
+  
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors.slice(0, labels.length),
+        borderColor: 'transparent',
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: "'Poppins', sans-serif", size: 13, weight: '500' },
+            padding: 15,
+            usePointStyle: true
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
 {% endblock %}

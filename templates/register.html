@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height:70vh;">
+  <div class="card p-4" style="width:480px;">
+    <h4 class="mb-3">Create an account</h4>
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input name="username" class="form-control" placeholder="Choose a username" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input name="email" type="email" class="form-control" placeholder="you@example.com" required>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col">
+          <label class="form-label">Password</label>
+          <input name="password" type="password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="col">
+          <label class="form-label">Confirm</label>
+          <input name="confirm_password" type="password" class="form-control" placeholder="Confirm password" required>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary flex-grow-1" type="submit">Create Account</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('login') }}">Have an account?</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
