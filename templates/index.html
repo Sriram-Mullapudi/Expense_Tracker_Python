@@ -1,126 +1,191 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!-- Filter Section -->
-<div class="card mb-4 border-0">
+<!-- Header Section -->
+<div class="dashboard-header mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="display-6 fw-800 mb-2">Expense Dashboard</h1>
+      <p class="text-muted mb-0">Track and manage your spending</p>
+    </div>
+    <a href="{{ url_for('add') }}" class="btn btn-primary btn-lg">
+      <i class="bi bi-plus-circle me-2"></i>Add Expense
+    </a>
+  </div>
+</div>
+
+<!-- Quick Stats Row -->
+<div class="row g-4 mb-5">
+  <div class="col-md-6 col-lg-3">
+    <div class="stat-box">
+      <div class="stat-icon" style="background: linear-gradient(135deg, rgba(0,166,255,0.15), rgba(0,166,255,0.05));">
+        <i class="bi bi-graph-up text-info"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Total Spent</div>
+        <div class="stat-value">${{ '%.2f'|format(total_spent) }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="stat-box">
+      <div class="stat-icon" style="background: linear-gradient(135deg, rgba(123,228,149,0.15), rgba(123,228,149,0.05));">
+        <i class="bi bi-calendar-check text-success"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Today</div>
+        <div class="stat-value">${{ '%.2f'|format(today_total) }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="stat-box">
+      <div class="stat-icon" style="background: linear-gradient(135deg, rgba(46,90,255,0.15), rgba(46,90,255,0.05));">
+        <i class="bi bi-calendar-month text-primary"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">This Month</div>
+        <div class="stat-value">${{ '%.2f'|format(month_total) }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="stat-box" id="budgetCard">
+      <div class="stat-icon" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05));">
+        <i class="bi bi-wallet2 text-warning"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Monthly Budget</div>
+        <div class="stat-value" id="budgetAmount">${{ '%.2f'|format(budget) if budget else '—' }}</div>
+        {% if budget_warning %}
+          <div class="small text-danger mt-2"><i class="bi bi-exclamation-circle me-1"></i>Over budget</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filters & Export -->
+<div class="card filter-card mb-5">
   <div class="card-body">
-    <h6 class="mb-3"><i class="bi bi-funnel me-2"></i>Filters</h6>
-    <form class="row g-2" method="get">
-      <div class="col-sm-6 col-lg-2">
-        <input type="date" name="date_from" value="{{ filters.date_from or '' }}" class="form-control form-control-sm" title="Start Date">
+    <h5 class="mb-4"><i class="bi bi-funnel me-2"></i>Filters</h5>
+    <form class="row g-3" method="get">
+      <div class="col-md-2">
+        <label class="form-label small fw-600">From Date</label>
+        <input type="date" name="date_from" value="{{ filters.date_from or '' }}" class="form-control" title="Start Date">
       </div>
-      <div class="col-sm-6 col-lg-2">
-        <input type="date" name="date_to" value="{{ filters.date_to or '' }}" class="form-control form-control-sm" title="End Date">
+      <div class="col-md-2">
+        <label class="form-label small fw-600">To Date</label>
+        <input type="date" name="date_to" value="{{ filters.date_to or '' }}" class="form-control" title="End Date">
       </div>
-      <div class="col-sm-6 col-lg-2">
-        <select name="category" class="form-select form-select-sm">
+      <div class="col-md-2">
+        <label class="form-label small fw-600">Category</label>
+        <select name="category" class="form-select">
           <option value="all">All categories</option>
           {% for c in all_categories %}
             <option value="{{ c }}" {% if filters.category==c %}selected{% endif %}>{{ c }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-sm-6 col-lg-2">
-        <input type="month" name="month" value="{{ filters.month or '' }}" class="form-control form-control-sm">
+      <div class="col-md-2">
+        <label class="form-label small fw-600">Month</label>
+        <input type="month" name="month" value="{{ filters.month or '' }}" class="form-control">
       </div>
-      <div class="col-auto">
-        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-search me-1"></i>Filter</button>
-        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('index') }}"><i class="bi bi-arrow-clockwise me-1"></i>Clear</a>
-      </div>
-      <div class="col-auto ms-auto">
-        <a class="btn btn-sm btn-success" href="{{ url_for('export_csv', **filters) }}"><i class="bi bi-download me-1"></i>Export CSV</a>
+      <div class="col-md-4 d-flex align-items-end gap-2">
+        <button class="btn btn-primary flex-grow-1" type="submit">
+          <i class="bi bi-search me-1"></i>Filter
+        </button>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-clockwise"></i>
+        </a>
+        <a href="{{ url_for('export_csv', **filters) }}" class="btn btn-outline-success">
+          <i class="bi bi-download me-1"></i>CSV
+        </a>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Statistics Cards -->
-<div class="row mb-4 g-3">
-  <div class="col-sm-6 col-lg-3">
-    <div class="stats-card">
-      <i class="bi bi-graph-up-arrow" style="font-size: 1.5rem; color: var(--sea); margin-bottom: 0.5rem; display: block;"></i>
-      <div class="text-muted">Total Spent</div>
-      <div class="h4">${{ '%.2f'|format(total_spent) }}</div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-lg-3">
-    <div class="stats-card">
-      <i class="bi bi-calendar-today" style="font-size: 1.5rem; color: var(--mint-deep); margin-bottom: 0.5rem; display: block;"></i>
-      <div class="text-muted">Today</div>
-      <div class="h4">${{ '%.2f'|format(today_total) }}</div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-lg-3">
-    <div class="stats-card">
-      <i class="bi bi-calendar-month" style="font-size: 1.5rem; color: var(--royal-blue); margin-bottom: 0.5rem; display: block;"></i>
-      <div class="text-muted">This Month</div>
-      <div class="h4">${{ '%.2f'|format(month_total) }}</div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-lg-3">
-    <div class="stats-card" id="budgetCard">
-      <i class="bi bi-wallet" style="font-size: 1.5rem; color: var(--amber); margin-bottom: 0.5rem; display: block;"></i>
-      <div class="text-muted">Monthly Budget</div>
-      <div class="h4" id="budgetAmount">${{ '%.2f'|format(budget) if budget else '—' }}</div>
-      {% if budget_warning %}
-        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>Over budget!</div>
-      {% endif %}
-    </div>
-  </div>
-</div>
-
-<!-- Charts and Recent Expenses -->
-<div class="row mb-4 g-3">
-  <div class="col-lg-6">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="mb-3"><i class="bi bi-pie-chart me-2"></i>Spending by Category</h6>
-        <canvas id="categoryChart" width="400" height="280"></canvas>
+<!-- Charts & Recent -->
+<div class="row g-4 mb-5">
+  <!-- Spending by Category -->
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Spending by Category</h5>
+      </div>
+      <div class="card-body d-flex align-items-center justify-content-center">
+        {% if category_labels %}
+          <canvas id="categoryChart" width="300" height="300"></canvas>
+        {% else %}
+          <div class="text-center text-muted">
+            <i class="bi bi-graph-up" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-3 mb-0">No spending data yet</p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
-  <div class="col-lg-6">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="mb-3"><i class="bi bi-clock-history me-2"></i>Recent Expenses</h6>
-        <div class="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th class="text-end">Amount</th>
-                <th class="text-end" style="width: 100px;">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if expenses %}
-                {% for e in expenses %}
+
+  <!-- Recent Expenses -->
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Expenses</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if expenses %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th class="text-end">Amount</th>
+                  <th class="text-center" style="width: 80px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for e in expenses[:10] %}
                   <tr>
-                    <td><small>{{ e.date }}</small></td>
                     <td>
-                      <strong>{{ e.title }}</strong>
+                      <span class="badge bg-light text-dark">{{ e.date.strftime('%m/%d') }}</span>
+                    </td>
+                    <td>
+                      <div class="fw-600">{{ e.title }}</div>
                       {% if e.description %}<div class="small text-muted">{{ e.description }}</div>{% endif %}
                     </td>
-                    <td><span class="badge bg-secondary">{{ e.category }}</span></td>
-                    <td class="text-end"><strong>${{ '%.2f'|format(e.amount) }}</strong></td>
-                    <td class="text-end">
+                    <td>
+                      <span class="badge bg-secondary">{{ e.category }}</span>
+                    </td>
+                    <td class="text-end fw-700">${{ '%.2f'|format(e.amount) }}</td>
+                    <td class="text-center">
                       <div class="btn-group btn-group-sm" role="group">
-                        <a href="{{ url_for('edit', id=e.id) }}" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <button class="btn btn-outline-danger" onclick="showDeleteModal({{ e.id }}, '{{ e.title|e }}')" title="Delete"><i class="bi bi-trash"></i></button>
+                        <a href="{{ url_for('edit', id=e.id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="showDeleteModal({{ e.id }}, '{{ e.title|e }}')" title="Delete">
+                          <i class="bi bi-trash"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
                 {% endfor %}
-              {% else %}
-                <tr>
-                  <td colspan="5" class="text-center text-muted py-3">No expenses found</td>
-                </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+          {% if expenses|length > 10 %}
+            <div class="card-footer bg-light text-center py-2">
+              <small class="text-muted">Showing 10 of {{ expenses|length }} expenses</small>
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            <p class="mt-3 mb-0">No expenses yet. <a href="{{ url_for('add') }}">Add your first expense</a></p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
