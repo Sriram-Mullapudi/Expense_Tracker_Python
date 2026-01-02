@@ -7,11 +7,19 @@ import calendar
 import csv
 import io
 
+try:
+    from flask_migrate import Migrate
+    HAS_MIGRATE = True
+except ImportError:
+    HAS_MIGRATE = False
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 
 db = SQLAlchemy(app)
+if HAS_MIGRATE:
+    migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'

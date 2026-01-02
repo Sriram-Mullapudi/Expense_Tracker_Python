@@ -2,3 +2,6 @@ Flask
 Flask_SQLAlchemy
 Flask-Login
 Werkzeug
+gunicorn
+pytest
+Flask-Migrate
