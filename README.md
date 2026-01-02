@@ -154,7 +154,7 @@ For production deployment (Heroku, AWS, DigitalOcean, Docker, etc.), see [DEPLOY
 - `static/style.css` — Professional CSS with light/dark mode
 - `tests/` — pytest smoke tests
 - `migrations/` — Alembic schema migrations (Flask-Migrate)
-- `Dockerfile`, `docker-compose.yml` — Container orchestration
+- `Dockerfile`, `docker-compose.yml` — Container orchestratio
 - `Procfile`, `start.sh`, `start.ps1` — Deployment and startup scripts
 - `Makefile` — Common development tasks
 
