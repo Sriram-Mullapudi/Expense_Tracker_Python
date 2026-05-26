@@ -113,7 +113,7 @@ ALERT_EMAIL_TEMPLATE = """
             <a href="{{ app_url }}/dashboard" class="button">View Dashboard</a>
         </div>
         <div class="footer">
-            <p>This is an automated alert from your Expense Tracker application.</p>
+            <p>This is an automated alert from your InsightFlow application.</p>
             <p>If you didn't set up budget alerts, you can manage them in your account settings.</p>
         </div>
     </div>
@@ -176,7 +176,7 @@ def send_alert_email(user_id: int, alert_id: int) -> bool:
         
         # Create message
         msg: Message = Message(
-            subject=f"💰 Expense Tracker Alert: {alert.title}",
+            subject=f"💰 InsightFlow Alert: {alert.title}",
             recipients=[user.email],
             html=html_body
         )
@@ -222,10 +222,10 @@ def send_welcome_email(user_email: str, username: str) -> bool:
         <body>
             <div class="container">
                 <div class="header">
-                    <h2>Welcome to Expense Tracker!</h2>
+                    <h2>Welcome to InsightFlow!</h2>
                 </div>
                 <p>Hi {{ username }},</p>
-                <p>Thank you for creating an account with Expense Tracker. You're all set to start managing your finances!</p>
+                <p>Thank you for creating an account with InsightFlow. You're all set to start managing your finances!</p>
                 
                 <div class="features">
                     <h3>Features you can use:</h3>
@@ -237,14 +237,14 @@ def send_welcome_email(user_email: str, username: str) -> bool:
                 
                 <p>Get started by logging into your dashboard and adding your first expense!</p>
                 
-                <p>Best regards,<br>The Expense Tracker Team</p>
+                <p>Best regards,<br>The InsightFlow Team</p>
             </div>
         </body>
         </html>
         """
         
         msg: Message = Message(
-            subject="Welcome to Expense Tracker!",
+            subject="Welcome to InsightFlow!",
             recipients=[user_email],
             html=welcome_template.replace("{{ username }}", username)
         )
@@ -377,7 +377,7 @@ def send_password_reset_email(user_email: str, reset_url: str) -> bool:
                 </div>
                 <div class="content">
                     <p>Hi,</p>
-                    <p>You requested a password reset for your Expense Tracker account.</p>
+                    <p>You requested a password reset for your InsightFlow account.</p>
                     <p>Click the button below to reset your password:</p>
                     
                     <a href="{{ reset_url }}" class="button">Reset Password</a>
@@ -395,7 +395,7 @@ def send_password_reset_email(user_email: str, reset_url: str) -> bool:
         """
         
         msg: Message = Message(
-            subject="Password Reset Request - Expense Tracker",
+            subject="Password Reset Request - InsightFlow",
             recipients=[user_email],
             html=reset_template.replace("{{ reset_url }}", reset_url)
         )
@@ -438,7 +438,7 @@ def send_username_recovery_email(user_email: str, username: str) -> bool:
                 </div>
                 <div class="content">
                     <p>Hi,</p>
-                    <p>You requested your username for the Expense Tracker account associated with this email.</p>
+                    <p>You requested your username for the InsightFlow account associated with this email.</p>
                     <p>Your username is:</p>
                     
                     <div class="username">{{ username }}</div>
@@ -454,7 +454,7 @@ def send_username_recovery_email(user_email: str, username: str) -> bool:
         """
         
         msg: Message = Message(
-            subject="Username Recovery - Expense Tracker",
+            subject="Username Recovery - InsightFlow",
             recipients=[user_email],
             html=recovery_template.replace("{{ username }}", username)
         )
