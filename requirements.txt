@@ -1,7 +1,115 @@
-Flask
-Flask_SQLAlchemy
-Flask-Login
-Werkzeug
-gunicorn
-pytest
-Flask-Migrate
+# ============================================================================
+# PRODUCTION-GRADE REQUIREMENTS
+# ============================================================================
+
+# Core Framework
+Flask==3.1.2
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Werkzeug==3.1.3
+
+# ============================================================================
+# Database & ORM
+# ============================================================================
+SQLAlchemy==2.0.28
+Flask-Migrate==4.0.5
+psycopg2-binary==2.9.12          # PostgreSQL driver (binary, pre-compiled)
+# psycopg2==2.9.9                # PostgreSQL driver (C extension, requires build tools)
+alembic==1.12.1                 # Database migration tool
+
+# ============================================================================
+# Security & Authentication
+# ============================================================================
+Flask-Talisman==1.1.0           # HTTPS and security headers
+Flask-WTF==1.2.1                # CSRF protection & Web forms
+Flask-Limiter==3.11.0           # Rate limiting
+Flask-SeaSurf==0.3.1            # CSRF protection
+PyJWT==2.10.0                   # JWT token handling
+bcrypt==4.1.2                   # Password hashing
+cryptography==42.0.2            # Encryption utilities
+
+# Two-Factor Authentication (2FA) - OPTIONAL (requires Pillow)
+# pyotp==2.9.0                    # TOTP/HOTP implementation
+# qrcode==7.4.2                   # QR code generation
+# Pillow==11.0.0                  # Image processing (for QR codes) - unavailable for Python 3.14
+
+# ============================================================================
+# Data Validation & Serialization
+# ============================================================================
+pydantic==2.5.0                 # Data validation & settings management
+pydantic-settings==2.1.0        # Environment configuration
+email-validator==2.1.0          # Email validation
+
+# ============================================================================
+# Email & Communications
+# ============================================================================
+Flask-Mail==0.10.0              # Email sending
+python-dotenv==1.0.1            # Environment variable loading
+
+# ============================================================================
+# Caching & Session Management
+# ============================================================================
+redis==5.0.4                    # Redis client
+Flask-Caching==2.3.0            # Caching decorator
+Flask-Session==0.6.0            # Server-side sessions
+
+# ============================================================================
+# Monitoring & Observability
+# ============================================================================
+sentry-sdk==2.0.0               # Error tracking & performance monitoring
+prometheus-client==0.19.0       # Metrics collection
+
+# ============================================================================
+# Background Jobs (Optional but Recommended)
+# ============================================================================
+celery==5.3.4                   # Distributed task queue
+# kombu==5.3.4                   # Messaging library for Celery
+
+# ============================================================================
+# Production Server
+# ============================================================================
+gunicorn==23.0.0                # WSGI HTTP Server
+python-multipart==0.0.6         # File upload support
+
+# ============================================================================
+# Testing & Quality
+# ============================================================================
+pytest==7.4.4                   # Testing framework
+pytest-cov==4.1.0               # Code coverage
+pytest-flask==1.3.0             # Flask testing utilities
+pytest-mock==3.12.0             # Mocking utilities
+factory-boy==3.3.0              # Test data factories
+
+# ============================================================================
+# Code Quality & Formatting
+# ============================================================================
+black==24.10.0                  # Code formatter
+flake8==7.0.0                   # Linter
+isort==5.12.0                   # Import sorter
+mypy==1.7.1                     # Type checker
+pylint==3.0.4                   # Code analysis
+
+# ============================================================================
+# Utilities
+# ============================================================================
+requests==2.32.0                # HTTP library
+click==8.1.7                    # CLI framework
+
+# ============================================================================
+# Optional Integrations
+# ============================================================================
+# AWS (for S3 file storage)
+# boto3==1.28.0
+# botocore==1.31.0
+
+# Google Cloud Storage
+# google-cloud-storage==2.10.0
+
+# Azure Storage
+# azure-storage-blob==12.19.0
+
+# Stripe (if adding payments)
+# stripe==7.0.0
+
+# SendGrid (alternative email provider)
+# sendgrid==6.11.0

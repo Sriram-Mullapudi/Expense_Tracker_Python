@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}AI Insights - Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-5 mb-1">💡 AI-Powered Insights</h1>
+            <p class="text-muted">Personalized spending analysis and recommendations</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted text-uppercase font-weight-bold">Today</h6>
+                    <h2 class="text-primary mb-0">${{ "%.2f"|format(stats.today) }}</h2>
+                    <small class="text-muted d-block mt-2">{{ stats.expense_count }} transactions</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted text-uppercase font-weight-bold">This Month</h6>
+                    <h2 class="text-info mb-0">${{ "%.2f"|format(stats.this_month) }}</h2>
+                    <small class="text-muted d-block mt-2">${{ "%.2f"|format(stats.daily_average) }}/day avg</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted text-uppercase font-weight-bold">This Year</h6>
+                    <h2 class="text-success mb-0">${{ "%.2f"|format(stats.this_year) }}</h2>
+                    <small class="text-muted d-block mt-2">Total spending</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted text-uppercase font-weight-bold">Projected</h6>
+                    <h2 class="text-warning mb-0">${{ "%.2f"|format(forecast.projected_total) }}</h2>
+                    <small class="text-muted d-block mt-2">End of month estimate</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h3 class="h4 mb-3">🤖 AI Insights</h3>
+            
+            {% if insights %}
+                <div class="row">
+                    {% for insight in insights %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm insight-card insight-{{ insight.type }}">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="insight-emoji" style="font-size: 28px; margin-right: 15px;">
+                                        {{ insight.emoji }}
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <h6 class="card-title mb-2">{{ insight.title }}</h6>
+                                        <p class="card-text mb-2">{{ insight.message }}</p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-lightbulb"></i> {{ insight.action }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle"></i> Add more expenses to get personalized insights!
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    {% if categories %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3 class="h4 mb-3">📊 Spending by Category</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {% for category, data in categories.items() %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="font-weight-bold">{{ category }}</span>
+                            <span class="badge badge-primary">${{ "%.2f"|format(data.amount) }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ data.percentage }}%;" 
+                                 aria-valuenow="{{ data.percentage }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ "%.0f"|format(data.percentage) }}%
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Spending Forecast -->
+        <div class="col-md-6">
+            <h3 class="h4 mb-3">📈 Month-End Forecast</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <p class="text-muted mb-2">Progress through month</p>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ (forecast.days_into_month / forecast.days_in_month * 100)|int }}%;">
+                                Day {{ forecast.days_into_month }} of {{ forecast.days_in_month }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h6 class="text-muted text-uppercase font-weight-bold font-size-sm">Spent So Far</h6>
+                            <h3 class="text-info">${{ "%.2f"|format(forecast.spent_so_far) }}</h3>
+                        </div>
+                        <div class="col-6 text-right">
+                            <h6 class="text-muted text-uppercase font-weight-bold font-size-sm">Projected Total</h6>
+                            <h3 class="text-warning">${{ "%.2f"|format(forecast.projected_total) }}</h3>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <p class="text-muted mb-1">
+                        <small>
+                            At your current pace of <strong>${{ "%.2f"|format(forecast.daily_average) }}/day</strong>,
+                            you'll spend approximately <strong>${{ "%.2f"|format(forecast.projected_total) }}</strong>
+                            by the end of this month.
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a href="{{ url_for('analytics.index') }}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-chart-line"></i> Full Analytics
+            </a>
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.insight-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #6c757d !important;
+}
+
+.insight-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.insight-warning {
+    border-left-color: #ffc107 !important;
+    background-color: #fff8f0 !important;
+}
+
+.insight-success {
+    border-left-color: #28a745 !important;
+    background-color: #f0f8f5 !important;
+}
+
+.insight-info {
+    border-left-color: #17a2b8 !important;
+    background-color: #f0f7f9 !important;
+}
+
+.insight-forecast {
+    border-left-color: #6f42c1 !important;
+    background-color: #f8f5ff !important;
+}
+
+.progress {
+    background-color: #e9ecef;
+    border-radius: 4px;
+}
+
+.progress-bar {
+    font-size: 11px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}

@@ -9,6 +9,7 @@
     </div>
     <div class="card-body">
       <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="mb-4">
           <label class="form-label fw-600">Title <span class="text-danger">*</span></label>
           <input name="title" class="form-control form-control-lg" value="{{ expense.title }}" placeholder="e.g., Grocery Shopping" required>
@@ -45,7 +46,7 @@
           <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
             <i class="bi bi-check-circle me-2"></i>Update Expense
           </button>
-          <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+          <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary btn-lg">
             <i class="bi bi-x-circle me-2"></i>Cancel
           </a>
         </div>

@@ -17,6 +17,7 @@ depends_on = None
 
 
 def upgrade():
+    # Create user table
     op.create_table('user',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('username', sa.String(length=80), nullable=False),
@@ -25,6 +26,7 @@ def upgrade():
         sa.UniqueConstraint('username')
     )
     
+    # Create expense table with foreign key to user
     op.create_table('expense',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
@@ -33,16 +35,17 @@ def upgrade():
         sa.Column('category', sa.String(length=50), nullable=False),
         sa.Column('amount', sa.Float(), nullable=False),
         sa.Column('description', sa.String(length=500)),
-        sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], ['user.id']),
         sa.PrimaryKeyConstraint('id')
     )
     
+    # Create setting table with foreign key to user
     op.create_table('setting',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('key', sa.String(length=50), nullable=False),
         sa.Column('value', sa.String(length=500)),
-        sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], ['user.id']),
         sa.PrimaryKeyConstraint('id')
     )
 
